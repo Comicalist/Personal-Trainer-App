@@ -98,7 +98,6 @@ const Training = () => {
         <AgGridReact rowData={trainings} columnDefs={columnDefs} pagination={true} paginationPageSize={7} />
       </Box>
 
-      {/* Add/Edit Training Dialog */}
       <Dialog open={openDialog} onClose={handleDialogClose}>
         <DialogTitle>{editTraining ? "Edit Training" : "Add Training"}</DialogTitle>
         <DialogContent>
