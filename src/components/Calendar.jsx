@@ -11,7 +11,7 @@ const locales = {
 };
 
 const Calendar = () => {
-    const { trainings } = useCustomerTrainingContext();
+    const { trainings, setTrainings } = useCustomerTrainingContext();
     const [events, setEvents] = useState([]);
     const [view, setView] = useState("month");
 
@@ -23,13 +23,39 @@ const Calendar = () => {
         locales,
     });
 
+    // Fetch trainings from the API when the component loads
+    const fetchTrainings = async () => {
+        try {
+            const response = await fetch("https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/gettrainings");
+            const data = await response.json();
+            console.log('Fetched Trainings:', data);  // Log the data for debugging
+            setTrainings(data); // Assuming the API provides the data directly as an array
+        } catch (error) {
+            console.error("Error fetching trainings:", error);
+        }
+    };
+
+    // Fetch trainings when the component mounts
     useEffect(() => {
-        const formattedEvents = trainings.map((training) => ({
-            id: training.id,
-            title: `${training.activity} / ${training.customer}`,
-            start: new Date(training.date),
-            end: new Date(new Date(training.date).getTime() + training.duration * 60000),
-        }));
+        fetchTrainings();
+    }, []);  // Fetch data on component mount
+
+    // Update events whenever the trainings change
+    useEffect(() => {
+        const formattedEvents = trainings.map((training) => {
+            const customer = training.customer;  // Access the customer directly from the training object
+            
+            if (!customer) {
+                console.warn('Missing customer data for training ID:', training.id);  // Log if customer data is missing
+            }
+
+            return {
+                id: training.id,
+                title: customer ? `${training.activity} / ${customer.firstname} ${customer.lastname}` : `${training.activity} / Unknown`,
+                start: new Date(training.date),
+                end: new Date(new Date(training.date).getTime() + training.duration * 60000), // Calculate end time based on duration
+            };
+        });
         setEvents(formattedEvents);
     }, [trainings]);
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCustomerTrainingContext } from "../CustomerTrainingContext";
 import { AgGridReact } from "ag-grid-react";
 import { Typography, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
@@ -11,24 +11,36 @@ const Customer = () => {
     const { customers, setCustomers } = useCustomerTrainingContext();
     const [openDialog, setOpenDialog] = useState(false);
     const [editCustomer, setEditCustomer] = useState(null);
-    const [name, setName] = useState("");
+    const [firstname, setFirstname] = useState("");
+    const [lastname, setLastname] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
+    const [streetaddress, setStreetaddress] = useState("");
+    const [postcode, setPostcode] = useState("");
+    const [city, setCity] = useState("");
 
     const handleDialogClose = () => {
         setOpenDialog(false);
         setEditCustomer(null);
-        setName("");
+        setFirstname("");
+        setLastname("");
         setEmail("");
         setPhone("");
+        setStreetaddress("");
+        setPostcode("");
+        setCity("");
     };
 
     const handleAddCustomer = () => {
         const newCustomer = {
             id: customers.length + 1,
-            name,
+            firstname,
+            lastname,
             email,
             phone,
+            streetaddress,
+            postcode,
+            city,
         };
         setCustomers([...customers, newCustomer]);
         handleDialogClose();
@@ -37,7 +49,7 @@ const Customer = () => {
     const handleEditCustomer = () => {
         const updatedCustomers = customers.map((customer) =>
             customer.id === editCustomer.id
-                ? { ...customer, name, email, phone }
+                ? { ...customer, firstname, lastname, email, phone, streetaddress, postcode, city }
                 : customer
         );
         setCustomers(updatedCustomers);
@@ -51,11 +63,15 @@ const Customer = () => {
     };
 
     const handleExportCSV = () => {
-        const dataToExport = customers.map(({ id, name, email, phone }) => ({
+        const dataToExport = customers.map(({ id, firstname, lastname, email, phone, streetaddress, postcode, city }) => ({
             id,
-            name,
+            firstname,
+            lastname,
             email,
             phone,
+            streetaddress,
+            postcode,
+            city,
         }));
 
         const parser = new Parser();
@@ -73,9 +89,13 @@ const Customer = () => {
     };
 
     const columnDefs = [
-        { headerName: "Name", field: "name", sortable: true, filter: true },
+        { headerName: "First Name", field: "firstname", sortable: true, filter: true },
+        { headerName: "Last Name", field: "lastname", sortable: true, filter: true },
         { headerName: "Email", field: "email", sortable: true, filter: true },
         { headerName: "Phone", field: "phone", sortable: true, filter: true },
+        { headerName: "Street Address", field: "streetaddress", sortable: true, filter: true },
+        { headerName: "Postcode", field: "postcode", sortable: true, filter: true },
+        { headerName: "City", field: "city", sortable: true, filter: true },
         {
             headerName: "Actions",
             field: "actions",
@@ -85,9 +105,13 @@ const Customer = () => {
                         color="primary"
                         onClick={() => {
                             setEditCustomer(params.data);
-                            setName(params.data.name);
+                            setFirstname(params.data.firstname);
+                            setLastname(params.data.lastname);
                             setEmail(params.data.email);
                             setPhone(params.data.phone);
+                            setStreetaddress(params.data.streetaddress);
+                            setPostcode(params.data.postcode);
+                            setCity(params.data.city);
                             setOpenDialog(true);
                         }}
                         size="small"
@@ -147,11 +171,19 @@ const Customer = () => {
                     <TextField
                         autoFocus
                         margin="dense"
-                        label="Name"
+                        label="First Name"
                         fullWidth
                         variant="outlined"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={firstname}
+                        onChange={(e) => setFirstname(e.target.value)}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Last Name"
+                        fullWidth
+                        variant="outlined"
+                        value={lastname}
+                        onChange={(e) => setLastname(e.target.value)}
                     />
                     <TextField
                         margin="dense"
@@ -169,6 +201,30 @@ const Customer = () => {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                     />
+                    <TextField
+                        margin="dense"
+                        label="Street Address"
+                        fullWidth
+                        variant="outlined"
+                        value={streetaddress}
+                        onChange={(e) => setStreetaddress(e.target.value)}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Postcode"
+                        fullWidth
+                        variant="outlined"
+                        value={postcode}
+                        onChange={(e) => setPostcode(e.target.value)}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="City"
+                        fullWidth
+                        variant="outlined"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDialogClose} color="primary">
@@ -184,3 +240,7 @@ const Customer = () => {
 };
 
 export default Customer;
+
+
+
+

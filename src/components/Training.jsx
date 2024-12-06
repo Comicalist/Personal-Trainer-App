@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useCustomerTrainingContext } from "../CustomerTrainingContext";
+import { useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Typography, MenuItem, Select } from "@mui/material";
 import { Add, Edit, Delete } from "@mui/icons-material";
@@ -12,14 +11,32 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
 const Training = () => {
-    const { customers, trainings, setTrainings } = useCustomerTrainingContext();
-
+    const [trainings, setTrainings] = useState([]);
+    const [customers, setCustomers] = useState([]);
     const [openDialog, setOpenDialog] = useState(false);
     const [editTraining, setEditTraining] = useState(null);
     const [date, setDate] = useState(dayjs());
     const [activity, setActivity] = useState("");
     const [duration, setDuration] = useState("");
     const [customer, setCustomer] = useState("");
+
+    useEffect(() => {
+        // Fetch the training data from the API using native fetch
+        fetch("https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/gettrainings")
+            .then((response) => response.json())
+            .then((data) => {
+                setTrainings(data);
+            })
+            .catch((error) => {
+                console.error("Error fetching training data:", error);
+            });
+
+        // Optionally, you can fetch customers here too if needed
+        // fetch("API_TO_FETCH_CUSTOMERS")
+        //   .then(response => response.json())
+        //   .then(data => setCustomers(data))
+        //   .catch(error => console.error('Error fetching customers:', error));
+    }, []);
 
     const handleDialogClose = () => {
         setOpenDialog(false);
@@ -31,21 +48,23 @@ const Training = () => {
     };
 
     const handleAddTraining = () => {
+        const selectedCustomer = customers.find((cust) => cust.id === customer);
         const newTraining = {
             id: trainings.length + 1,
             date,
             activity,
             duration: parseInt(duration, 10),
-            customer,
+            customer: selectedCustomer,
         };
         setTrainings([...trainings, newTraining]);
         handleDialogClose();
     };
 
     const handleEditTraining = () => {
+        const selectedCustomer = customers.find((cust) => cust.id === customer);
         const updatedTrainings = trainings.map((training) =>
             training.id === editTraining.id
-                ? { ...training, date, activity, duration: parseInt(duration, 10), customer }
+                ? { ...training, date, activity, duration: parseInt(duration, 10), customer: selectedCustomer }
                 : training
         );
         setTrainings(updatedTrainings);
@@ -59,10 +78,75 @@ const Training = () => {
     };
 
     const columnDefs = [
-        { headerName: "Date", field: "date", valueFormatter: (params) => dayjs(params.value).format("DD.MM.YYYY HH:mm") },
-        { headerName: "Activity", field: "activity", sortable: true, filter: true },
-        { headerName: "Duration (min)", field: "duration", sortable: true, filter: true },
-        { headerName: "Customer", field: "customer", sortable: true, filter: true },
+        { 
+            headerName: "Date", 
+            field: "date", 
+            valueFormatter: (params) => dayjs(params.value).format("DD.MM.YYYY HH:mm"),
+            width: 200,
+        },
+        { 
+            headerName: "Activity", 
+            field: "activity", 
+            sortable: true, 
+            filter: true,
+            width: 180,
+        },
+        { 
+            headerName: "Duration (min)", 
+            field: "duration", 
+            sortable: true, 
+            filter: true, 
+            width: 120,
+        },
+        {
+            headerName: "First Name",
+            field: "customer.firstname",
+            sortable: true,
+            filter: true,
+            width: 150,
+        },
+        {
+            headerName: "Last Name",
+            field: "customer.lastname",
+            sortable: true,
+            filter: true,
+            width: 150,
+        },
+        {
+            headerName: "Email",
+            field: "customer.email",
+            sortable: true,
+            filter: true,
+            width: 200,
+        },
+        {
+            headerName: "Phone",
+            field: "customer.phone",
+            sortable: true,
+            filter: true,
+            width: 160,
+        },
+        {
+            headerName: "Address",
+            field: "customer.streetaddress",
+            sortable: true,
+            filter: true,
+            width: 200,
+        },
+        {
+            headerName: "Postcode",
+            field: "customer.postcode",
+            sortable: true,
+            filter: true,
+            width: 150,
+        },
+        {
+            headerName: "City",
+            field: "customer.city",
+            sortable: true,
+            filter: true,
+            width: 150,
+        },
         {
             headerName: "Actions",
             field: "actions",
@@ -73,7 +157,7 @@ const Training = () => {
                         setDate(params.data.date);
                         setActivity(params.data.activity);
                         setDuration(params.data.duration);
-                        setCustomer(params.data.customer);
+                        setCustomer(params.data.customer.id);
                         setOpenDialog(true);
                     }}>
                         <Edit />
@@ -83,8 +167,10 @@ const Training = () => {
                     </Button>
                 </Box>
             ),
+            width: 120,
         },
     ];
+    
 
     return (
         <Box padding={3}>
@@ -144,8 +230,8 @@ const Training = () => {
                             Select Customer
                         </MenuItem>
                         {customers.map((customer) => (
-                            <MenuItem key={customer.id} value={customer.name}>
-                                {customer.name}
+                            <MenuItem key={customer.id} value={customer.id}>
+                                {customer.firstname} {customer.lastname}
                             </MenuItem>
                         ))}
                     </Select>
