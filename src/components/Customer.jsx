@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { useCustomerTrainingContext } from "../CustomerTrainingContext";
 import { AgGridReact } from "ag-grid-react";
 import { Typography, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";

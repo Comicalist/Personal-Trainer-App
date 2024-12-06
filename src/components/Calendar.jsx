@@ -28,8 +28,8 @@ const Calendar = () => {
         try {
             const response = await fetch("https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/gettrainings");
             const data = await response.json();
-            console.log('Fetched Trainings:', data);  // Log the data for debugging
-            setTrainings(data); // Assuming the API provides the data directly as an array
+            console.log('Fetched Trainings:', data);
+            setTrainings(data);
         } catch (error) {
             console.error("Error fetching trainings:", error);
         }
@@ -38,22 +38,22 @@ const Calendar = () => {
     // Fetch trainings when the component mounts
     useEffect(() => {
         fetchTrainings();
-    }, []);  // Fetch data on component mount
+    }, []);
 
-    // Update events whenever the trainings change
+  
     useEffect(() => {
         const formattedEvents = trainings.map((training) => {
-            const customer = training.customer;  // Access the customer directly from the training object
+            const customer = training.customer; 
             
             if (!customer) {
-                console.warn('Missing customer data for training ID:', training.id);  // Log if customer data is missing
+                console.warn('Missing customer data for training ID:', training.id); 
             }
 
             return {
                 id: training.id,
                 title: customer ? `${training.activity} / ${customer.firstname} ${customer.lastname}` : `${training.activity} / Unknown`,
                 start: new Date(training.date),
-                end: new Date(new Date(training.date).getTime() + training.duration * 60000), // Calculate end time based on duration
+                end: new Date(new Date(training.date).getTime() + training.duration * 60000),
             };
         });
         setEvents(formattedEvents);

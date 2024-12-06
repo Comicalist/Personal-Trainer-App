@@ -1,12 +1,11 @@
 import { createContext, useState, useContext, useEffect } from "react";
 
-// Create context
 const CustomerTrainingContext = createContext();
 
 export const useCustomerTrainingContext = () => useContext(CustomerTrainingContext);
 
 export const CustomerTrainingProvider = ({ children }) => {
-  // Define state for customers and trainings
+
   const [customers, setCustomers] = useState([]);
   const [trainings, setTrainings] = useState([]);
 

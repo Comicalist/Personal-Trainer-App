@@ -21,7 +21,7 @@ const Training = () => {
     const [customer, setCustomer] = useState("");
 
     useEffect(() => {
-        // Fetch the training data from the API using native fetch
+        // Fetch the training data
         fetch("https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/gettrainings")
             .then((response) => response.json())
             .then((data) => {
@@ -30,12 +30,6 @@ const Training = () => {
             .catch((error) => {
                 console.error("Error fetching training data:", error);
             });
-
-        // Optionally, you can fetch customers here too if needed
-        // fetch("API_TO_FETCH_CUSTOMERS")
-        //   .then(response => response.json())
-        //   .then(data => setCustomers(data))
-        //   .catch(error => console.error('Error fetching customers:', error));
     }, []);
 
     const handleDialogClose = () => {
