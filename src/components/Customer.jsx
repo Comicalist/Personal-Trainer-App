@@ -131,12 +131,13 @@ const Customer = () => {
                 Export to CSV
             </Button>
 
-            <Box className="ag-theme-alpine" style={{ height: "400px", width: "100%" }}>
+            <Box className="ag-theme-alpine" style={{ height: "520px", width: "100%" }}>
                 <AgGridReact
                     rowData={customers}
                     columnDefs={columnDefs}
                     pagination={true}
-                    paginationPageSize={5}
+                    paginationPageSize={10}
+                    paginationPageSizeSelector={[10, 25, 50]}
                 />
             </Box>
 
