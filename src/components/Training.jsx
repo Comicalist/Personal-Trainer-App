@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useCustomerTrainingContext } from "../CustomerTrainingContext";
 import { AgGridReact } from "ag-grid-react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Typography, MenuItem, Select } from "@mui/material";
@@ -7,7 +7,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
-import "dayjs/locale/de";
+import "dayjs/locale/en-gb";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
@@ -101,7 +101,7 @@ const Training = () => {
       <Dialog open={openDialog} onClose={handleDialogClose}>
         <DialogTitle>{editTraining ? "Edit Training" : "Add Training"}</DialogTitle>
         <DialogContent>
-          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
             <DateTimePicker
               label="Date & Time"
               value={date}
